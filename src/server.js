@@ -1,8 +1,8 @@
 // src/server.js
 import 'dotenv/config';
 import { createApp } from './app.js';
-// import { connectToDatabase } from './db.js';
-// import { createMongoRepository } from './repositories/mongoRepository.js';
+import { connectToDatabase } from './db.js';
+import { createMongoRepository } from './repositories/mongoRepository.js';
 import { createInMemoryRepository } from './repositories/inMemoryRepository.js';
 
 /**
@@ -21,8 +21,7 @@ import { createInMemoryRepository } from './repositories/inMemoryRepository.js';
  */
 async function start() {
   const port = process.env.PORT || 4000;
-//   const repoMode = process.env.REPO_MODE || 'mongo';
-  const repoMode = 'memory';
+  const repoMode = process.env.REPO_MODE || 'mongo';
 
   let repo;
   if (repoMode === 'memory') {
