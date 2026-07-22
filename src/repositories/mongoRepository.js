@@ -1,6 +1,6 @@
 import { Group, Expense, Settlement } from "../models/index.js";
 // TODO: Make this NoFoundError Independent of inMememoryRepository.
-import { NotFoundError } from "./inMemoryRepository.js";
+import { NotFoundError } from "../utils/errorUtils.js";
 
 export function createMongoRepository() {
     return {

@@ -1,6 +1,7 @@
 import { splitEqually, splitByExactAmounts, splitByPercentage } from '../utils/splitCalculator.js';
 import { computeGroupBalances } from '../services/balanceService.js';
-import { NotFoundError } from '../repositories/inMemoryRepository.js';
+import { NotFoundError } from '../utils/errorUtils.js';
+import { assertMembership } from '../auth/authz.js';
 
 export function createGroupController(repo) {
   return {
@@ -21,6 +22,7 @@ export function createGroupController(repo) {
 
     async getGroup(req, res, next) {
       try {
+        await assertMembership(repo, req.params.groupId, req.userEmail)
         const group = await repo.getGroup(req.params.groupId);
         if (!group) throw new NotFoundError(`Group ${req.params.groupId} not found`);
         res.json(group);
@@ -31,6 +33,7 @@ export function createGroupController(repo) {
 
     async addExpense(req, res, next) {
       try {
+        await assertMembership(repo, req.params.groupId, req.userEmail)
         const { groupId } = req.params;
         const { description, totalAmount, paidBy, splitType, splitInput } = req.body;
 
@@ -78,6 +81,7 @@ export function createGroupController(repo) {
 
     async getBalances(req, res, next) {
       try {
+        await assertMembership(repo, req.params.groupId, req.userEmail)
         const { groupId } = req.params;
         const group = await repo.getGroup(groupId);
         if (!group) throw new NotFoundError(`Group ${groupId} not found`);
@@ -93,6 +97,7 @@ export function createGroupController(repo) {
 
     async settle(req, res, next) {
       try {
+        await assertMembership(repo, req.params.groupId, req.userEmail);
         const { groupId } = req.params;
         const { from, to, amount } = req.body;
         const idempotencyKey = req.header('Idempotency-Key');
@@ -128,6 +133,7 @@ export function createGroupController(repo) {
     // immutable-ledger design from Part 3 exists to provide).
     async getHistory(req, res, next) {
       try {
+        await assertMembership(repo, req.params.groupId, req.userEmail)
         const { groupId } = req.params;
         const group = await repo.getGroup(groupId);
         if (!group) throw new NotFoundError(`Group ${groupId} not found`);

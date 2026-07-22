@@ -28,7 +28,6 @@ export function splitEqually(totalAmount, participantIds) {
   const baseShare = Math.floor(totalAmount / n);
   let remainder = totalAmount - baseShare * n; // leftover paise, always < n
 
-  // TODO: Distribute leftover rupees (converted to paise)
   // into participants and then assign the remaining paise to the first N participants.
   return participantIds.map((participantId) => {
     // give the leftover 1-paise units to the first `remainder` participants
